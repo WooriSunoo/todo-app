@@ -18,13 +18,70 @@ router.get("/todos", async (req, res) => {
   }
 });
 
+// POST localhost:PORT/todo - create a new todo (CREATE)
 router.post("/todo", async (req, res) => {
   try {
     let newTodo = await Todo.create({
       title: req.body.title,
     });
-    console.log(newTodo);
     res.send(newTodo);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+// PATCH localhost:PORT/todo/:todoId - edit a specific todo (UPDATE)
+// 수정 성공시; true -> res.send(true)
+// 수정 실패시; false -> res.send(false)
+router.patch("/todo/:todoId", async (req, res) => {
+  // console.log(req.body); // { title: 'my todo - 수정', done: true }
+  // console.log(req.params); // { todoId: '1' }
+  try {
+    let [isUpdated] = await Todo.update(
+      {
+        title: req.body.title,
+        done: req.body.done,
+      },
+      {
+        where: {
+          id: req.params.todoId,
+        },
+      }
+    );
+    // console.log(isUpdated);
+    // 수정 성공시; [ 1 ] -> 1
+    // 수정 실패시; [ 0 ] -> 0
+
+    // 수정 실패 (!0)
+    if (!isUpdated) {
+      return res.send(false);
+    }
+
+    // 수정 성공
+    res.send(true);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+router.delete("/todo/:todoId", async (req, res) => {
+  // console.log(req.body); // { title: 'my todo - 수정', done: true }
+  // console.log(req.params); // { todoId: '1' }
+  try {
+    let isDeleted = await Todo.destroy({
+      where: {
+        id: req.params.todoId,
+      },
+    });
+    console.log(isDeleted); //1 or 0 구조분해할 필요없어
+
+    // 삭제 실패 (!0)
+    if (!isDeleted) {
+      return res.send(false);
+    }
+
+    // 삭제 성공
+    res.send(true);
   } catch (err) {
     res.send(err);
   }
