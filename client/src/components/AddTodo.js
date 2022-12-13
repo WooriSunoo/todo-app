@@ -1,7 +1,8 @@
 import { useState } from "react";
-// 1. 함수형 컴포넌트
-// 2. input과 button을 가짐
-const AddTodo = ({ additem }) => {
+
+const AddTodo = ({ addItem }) => {
+  // const { addItem } = props;
+
   // 사용자 입력을 저장할 객체
   // (id, title, done에 대한 정보를 저장해야해서 객체 형태로!!)
   const [todoItem, setTodoItem] = useState({
@@ -10,15 +11,24 @@ const AddTodo = ({ additem }) => {
 
   const onButtonClick = () => {
     // props로 받아온 addItem 함수 실행
-    additem(todoItem);
+    addItem(todoItem); // {title: 'input입력값'}
+    setTodoItem({ title: "" }); // input 초기화
   };
+
+  const onEnterKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onButtonClick();
+    }
+  };
+
   return (
     <div className="AddTodo">
       <input
         type="text"
-        value={todoItem}
-        onChange={(e) => setTodoItem(e.target.value)}
         placeholder="Add your new Todo"
+        value={todoItem.title}
+        onChange={(e) => setTodoItem({ title: e.target.value })}
+        onKeyPress={onEnterKeyPress}
       />
       <button onClick={onButtonClick}>ADD</button>
     </div>

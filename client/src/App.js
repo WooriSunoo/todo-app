@@ -1,8 +1,8 @@
-import { useState } from "react";
-import Todo from "./components/Todo";
+import { useState, useRef } from "react";
 import AddTodo from "./components/AddTodo";
+import Todo from "./components/Todo";
 
-function App() {
+const App = () => {
   const [todoItems, setTodoItems] = useState([
     {
       id: 1,
@@ -20,23 +20,28 @@ function App() {
       done: true,
     },
   ]);
-  const additem = (newItem) => {
-    // newItem설정이 코드로 나와야
-    // newItem-{id: ?, title: ?, done: false}
-    // setTodoItems() 설정해서 설정이 바뀌면 알아서 렌더링
-    let addedItem = { id: todoItems.length + 1, title: newItem, done: false };
-    setTodoItems([...todoItems, addedItem]);
+  const todoId = useRef(4);
+
+  // AddTodo 컴포넌트는 상위 컴포넌트(App)의 todoItems(state)에 접근 불가능
+  // 상위 컴포넌트(App)은 AddTodo 컴포넌트 접근 가능
+  // => App 컴포넌트에 addItem() 함수를 정의하고, 해당 함수를 AddTodo props로 넘겨야 함
+  const addItem = (newItem) => {
+    // newItem - {id: ?, title: ?, done: false}
+    newItem.id = todoId.current++; // key를 위한 id 설정
+    newItem.done = false; // done 초기화
+    // 기존 todoItems를 유지하고, 새로운 newItem을 추가
+    setTodoItems([...todoItems, newItem]); // setTodoItems(todoItems.concat(newItem))
   };
+
   return (
-    // 3. AddTodo 컴포넌트를 추가
     <div className="App">
-      <AddTodo additem={additem} />
-      {todoItems.map((todoItem) => {
-        console.log("APP.js todoItem", todoItem); //{id: 1, title: 'My Todo1', done: false}
-        return <Todo key={todoItem.id} todoItem={todoItem} />;
+      <AddTodo addItem={addItem} />
+      {todoItems.map((item) => {
+        // console.log(item); // {id: 1, title: 'My Todo1', done: false}
+        return <Todo key={item.id} item={item} />;
       })}
     </div>
   );
-}
+};
 
 export default App;
