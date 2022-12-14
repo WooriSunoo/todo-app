@@ -1,47 +1,50 @@
 import { useState } from "react";
+import "../styles/Todo.scss";
+// import FontAwesomeIcon from "./FontAwesomeIcon";
 
 const Todo = ({ item, deleteItem }) => {
   // console.log(item); // { id: 1, title: 'todo1', done: false, }
   const { id, title, done } = item;
   const [todoItem, setTodoItem] = useState(item);
-  const [readOnly, setReadonly] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
 
   const onDeleteBtnClick = () => {
     deleteItem(todoItem);
   };
+
   // title input 커서가 깜빡인다고 수정이 가능한 것은 아님
   // 사용자가 키보드 입력할 때마다 todoItem의 title을 새 값으로 변경
+  const editEventHandler = (e) => {
+    // rest: id, done 정보
+    const { title, ...rest } = todoItem; // { id: 1, title: 'todo1', done: false, }
 
-  const editEventhandler = (e) => {
-    // editItem(e, todoItem);
-    // rest: id, done정보
-    const { title, ...rest } = todoItem; //{ id: 1, title: 'todo1', done: false, }{ id: 1, title: 'todo1', done: false, }
     setTodoItem({
       title: e.target.value,
       ...rest,
-      // id: todoItem.id,
-      // done: todoItem.done,
     });
   };
-  // title input클릭시(title을 수정하겠다!!) :readOnly state를 false로 변경
+
+  // title input 클릭시 (title를 수정하겠다!!) : readOnly state를 false로 변경
   const offReadOnlyMode = () => {
-    // console.log("offReadonly", readOnly);
-    setReadonly(false);
+    setReadOnly(false);
   };
 
-  // title input에서 enter키 입력시 (title 수정을 완료했습니다!!):readOnly state를true로 변경
+  // title input에서 enter 키 입력시 (title 수정을 완료했다!!): readOnly state를 true로 변경
   const enterKeyEventHandler = (e) => {
     if (e.key === "Enter") {
-      // console.log("enterKeyEventHandler", readOnly);
-      setReadonly(true);
+      setReadOnly(true);
     }
   };
-  // checkbox업데이트
-  // done: true -> false, false, ->true
+
+  // checkbox 업데이트
+  // done: true -> false, fasle, -> true
   const checkboxEventHandler = (e) => {
-    // console.log("editCheckedbox", e.target.checked, done);
-    // todoItem.done = !todoItem.done; //!true-> false, !false ->true
-    setTodoItem(todoItem);
+    // rest: id, title 정보
+    const { done, ...rest } = todoItem; // { id: 1, title: 'todo1', done: false, }
+    setTodoItem({
+      done: e.target.checked,
+      ...rest,
+    });
   };
 
   return (
@@ -57,13 +60,11 @@ const Todo = ({ item, deleteItem }) => {
       {/* <label htmlFor={`todo${id}`}>{title}</label> */}
       <input
         type="text"
-        id={`todo${id}`}
-        name={`todo${id}`}
         value={todoItem.title}
-        onChange={editEventhandler}
-        readOnly={readOnly}
+        onChange={editEventHandler}
         onClick={offReadOnlyMode}
         onKeyPress={enterKeyEventHandler}
+        readOnly={readOnly}
       />
       <button onClick={onDeleteBtnClick}>DELETE</button>
     </div>

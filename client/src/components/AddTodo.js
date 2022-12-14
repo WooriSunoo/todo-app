@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/AddTodo.scss";
 
 const AddTodo = ({ addItem }) => {
   // const { addItem } = props;
@@ -30,7 +31,7 @@ const AddTodo = ({ addItem }) => {
         onChange={(e) => setTodoItem({ title: e.target.value })}
         onKeyPress={onEnterKeyPress}
       />
-      <button onClick={onButtonClick}>ADD</button>
+      <button onClick={onButtonClick}>+</button>
     </div>
   );
 };
