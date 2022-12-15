@@ -1,4 +1,4 @@
-# Sean Todo App
+# Todo App
 
 ## Start Project
 
